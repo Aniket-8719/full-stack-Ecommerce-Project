@@ -37,7 +37,7 @@ import ProcessOrder from "./Components/Admin/ProcessOrder";
 import UserList from "./Components/Admin/UserList";
 import UpdateUser from "./Components/Admin/UpdateUser";
 import ProductReviews from "./Components/Admin/ProductReviews";
- 
+import Loader from "./Components/Layouts/Loader";
 
 function App() {
   const dispatch = useDispatch();
@@ -88,17 +88,20 @@ function App() {
         <Route exact path="/cart" element={<Cart/>} />
         <Route exact path="/shipping" element={<PrivateRoute Component={Shipping} />} />
         <Route exact path="/order/confirm" element={<PrivateRoute Component={ConfirmOrder} />} />
-        {stripeApiKey && (
-          <Route
-            exact
-            path="/process/payment"
-            element={
-              <Elements stripe={loadStripe(stripeApiKey)}>
-                <PrivateRoute Component={Payment} />
-              </Elements>
-            }
-          />
-        )}
+        <Route
+        exact
+        path="/process/payment"
+        element={
+              stripeApiKey ? (
+                <Elements stripe={loadStripe(stripeApiKey)}>
+                  <PrivateRoute Component={Payment} />
+                </Elements>
+        ) : (
+        <div><Loader/></div> // Or a proper loader
+    )
+  }
+/>
+
         <Route exact path="/success" element={<PrivateRoute Component={OrderSuccess} />} />
         <Route exact path="/orders" element={<PrivateRoute Component={MyOrders} />} />
         <Route exact path="/order/:id" element={<PrivateRoute Component={OrderDetails} />} />
